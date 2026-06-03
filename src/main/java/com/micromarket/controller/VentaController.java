@@ -20,19 +20,35 @@ public class VentaController {
     @PostMapping("/procesar")
     public ResponseEntity<HttpGlobalResponse<VentaResponseDTO>> procesarVenta(
             @Valid @RequestBody VentaRequestDTO request) {
-        HttpGlobalResponse<VentaResponseDTO> response = ventaService.procesarVenta(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        try {
+            HttpGlobalResponse<VentaResponseDTO> response = ventaService.procesarVenta(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (Exception e) {
+            HttpGlobalResponse<VentaResponseDTO> error = new HttpGlobalResponse<>();
+            error.setMessage("Error al procesar la venta: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
     }
 
     @GetMapping("/listar")
     public ResponseEntity<List<VentaResponseDTO>> listarVentas() {
-        List<VentaResponseDTO> response = ventaService.listarVentas();
-        return ResponseEntity.ok(response);
+        try {
+            List<VentaResponseDTO> response = ventaService.listarVentas();
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @GetMapping("/obtener/{id}")
     public ResponseEntity<HttpGlobalResponse<VentaResponseDTO>> obtenerVenta(@PathVariable Long id) {
-        HttpGlobalResponse<VentaResponseDTO> response = ventaService.obtenerVenta(id);
-        return ResponseEntity.ok(response);
+        try {
+            HttpGlobalResponse<VentaResponseDTO> response = ventaService.obtenerVenta(id);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            HttpGlobalResponse<VentaResponseDTO> error = new HttpGlobalResponse<>();
+            error.setMessage("Error al obtener la venta: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
     }
 }
